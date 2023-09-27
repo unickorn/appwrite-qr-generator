@@ -95,7 +95,7 @@ export default async ({ req, res, log, error }: any) => {
     // return as png bytes
     const pngBytes = await QRCode.toBuffer(data, options);
     return res.send(pngBytes, 200, {
-      "Content-Type": options.type,
+      "Content-Type": "image/png",
     });
   }
 };
