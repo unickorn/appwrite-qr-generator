@@ -218,7 +218,7 @@
 
 				generateUrl() {
 					let url = "https://{{HOSTNAME}}/qr";
-					url += '?data="' + encodeURIComponent(this.data) + '"';
+					url += '?data=' + encodeURIComponent(this.data);
 					if (this.advanced) {
 						if (this.type != "image/png") {
 							url += "&type=" + encodeURIComponent(this.type);
