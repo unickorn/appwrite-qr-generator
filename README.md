@@ -1,12 +1,12 @@
-# ⚡ Appwrite - QRCode Function
+# ⚡ Appwrite - QR Code Generator
 
-A simple Appwrite function that generates QR codes.
+A dead simple Appwrite function that generates QR codes.
 
 ## 🧰 Usage
 
 ### GET /qr
 
-- Returns a QR code in base64 image format.
+- Returns a QR code in PNG image format.
 
 **Parameters**
 | Parameter | Description | Type |
@@ -29,7 +29,7 @@ Note that the `data` parameter is required, and all other parameters are optiona
 
 Sample `200` Response:
 
-![qr.png](https://6514462118257ac57fe9.appwrite.global/qr?data=https%3A%2F%2F6514462118257ac57fe9.appwrite.global/)
+![qr.png](https://qr.ilhan.me/qr?data=https%3A%2F%2Fqr.ilhan.me/)
 
 ### GET /
 - Returns an HTML website for generating QR codes.
