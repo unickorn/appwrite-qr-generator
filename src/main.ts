@@ -1,4 +1,4 @@
-import QRCode, { QRCodeMaskPattern, QRCodeToDataURLOptions, QRCodeToDataURLOptionsJpegWebp } from 'qrcode';
+import QRCode, { QRCodeMaskPattern, QRCodeToBufferOptions, QRCodeToDataURLOptions, QRCodeToDataURLOptionsJpegWebp } from 'qrcode';
 import { getStaticFile, interpolate } from './utils';
 
 export default async ({ req, res, log, error }: any) => {
@@ -24,29 +24,7 @@ export default async ({ req, res, log, error }: any) => {
     const data = decodeURIComponent(dataValue);
 
     // parse the type first
-    let options = {} as QRCodeToDataURLOptions;
-    const type = req.query.type ?? "image/png";
-    if (type) {
-      if (!["image/png", "image/jpeg", "image/webp"].includes(type)) {
-        return res.json({
-          error: "type must be one of image/png, image/jpeg, image/webp",
-        });
-      }
-      if (type === "image/jpeg" || type === "image/webp") {
-        options = {} as QRCodeToDataURLOptionsJpegWebp;
-        let quality = req.query.quality;
-        if (quality) {
-          quality = parseFloat(quality);
-          if (quality < 0 || quality > 1) {
-            return res.json({
-              error: "quality must be between 0 and 1",
-            });
-          }
-          options.rendererOpts = { quality };
-        }
-      }
-      options.type = type;
-    }
+    let options: QRCodeToBufferOptions = {};
 
     const version = req.query.version;
     if (version) {
@@ -99,8 +77,24 @@ export default async ({ req, res, log, error }: any) => {
       options.color.dark = colorDark;
     }
 
-    const url = await QRCode.toDataURL(data,);
-    return res.send(url, 200, {
+    const deflateLevel = req.query.deflateLevel;
+    if (deflateLevel) {
+      if (!options.rendererOpts) {
+        options.rendererOpts = {};
+      }
+      options.rendererOpts.deflateLevel = parseInt(deflateLevel);
+    }
+    const deflateStrategy = req.query.deflateStrategy;
+    if (deflateStrategy) {
+      if (!options.rendererOpts) {
+        options.rendererOpts = {};
+      }
+      options.rendererOpts.deflateStrategy = parseInt(deflateStrategy);
+    }
+
+    // return as png bytes
+    const pngBytes = await QRCode.toBuffer(data, options);
+    return res.send(pngBytes, 200, {
       "Content-Type": options.type,
     });
   }

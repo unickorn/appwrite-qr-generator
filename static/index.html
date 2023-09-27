@@ -69,31 +69,16 @@
 										</label>
 								</li>
 								<li x-cloak x-show="$store.form.advanced" class="form-item">
-									<label class="label" for="type">Image type</label>
+									<label class="label" for="version">QR Version</label>
 									<div class="select u-width-full-line">
-										<select x-model="$store.form.type" name="type">
-											<template x-for="type in $store.options.types" :key="type">
-												<option :selected="$store.form.type === type" :value="type"
-													x-text="type"></option>
+										<select x-model="$store.form.version" name="version">
+											<template x-for="version in $store.options.version" :key="version">
+												<option :selected="$store.form.version == version" :value="version"
+													x-text="version">
+												</option>
 											</template>
 										</select>
 										<span class="icon-cheveron-down" aria-hidden="true"></span>
-									</div>
-								</li>
-								<li x-cloak x-show="$store.form.advanced" x-show="$store.form.type != 'image/png'"
-									class="form-item">
-									<label class="label" for="quality">Image Quality (0.0 - 1.0)</label>
-									<div class="input-text-wrapper">
-										<input x-model="$store.form.quality" type="number"
-											class="input-text u-padding-inline-end-56" placeholder="0.92"
-											name="quality" />
-									</div>
-								</li>
-								<li x-cloak x-show="$store.form.advanced" class="form-item">
-									<label class="label" for="version">QR Version (optional, 1 - 40)</label>
-									<div class="input-text-wrapper">
-										<input x-model="$store.form.version" type="number"
-											class="input-text u-padding-inline-end-56" placeholder="" name="version" />
 									</div>
 								</li>
 								<li x-cloak x-show="$store.form.advanced" class="form-item">
@@ -113,11 +98,17 @@
 									</div>
 								</li>
 								<li x-cloak x-show="$store.form.advanced" class="form-item">
-									<label class="label" for="maskPattern">Mask Pattern (optional, 0 - 7)</label>
-									<div class="input-text-wrapper">
-										<input x-model="$store.form.maskPattern" type="number"
-											class="input-text u-padding-inline-end-56" placeholder=""
-											name="maskPattern" />
+									<label class="label" for="maskPattern">Mask Pattern (optional)</label>
+									<div class="select u-width-full-line">
+										<select x-model="$store.form.maskPattern" name="maskPattern">
+											<template x-for="maskPattern in $store.options.maskPattern"
+												:key="maskPattern">
+												<option :selected="$store.form.maskPattern == maskPattern"
+													:value="maskPattern" x-text="maskPattern">
+												</option>
+											</template>
+										</select>
+										<span class="icon-cheveron-down" aria-hidden="true"></span>
 									</div>
 								</li>
 								<li x-cloak x-show="$store.form.advanced" class="form-item">
@@ -155,6 +146,32 @@
 										<input x-model="$store.form.colorDark" type="text"
 											class="input-text u-padding-inline-end-56" placeholder="#000000"
 											name="colorDark" />
+									</div>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" class="form-item">
+									<label class="label" for="deflateLevel">Deflate Level</label>
+									<div class="select u-width-full-line">
+										<select x-model="$store.form.deflateLevel" name="deflateLevel">
+											<template x-for="deflateLevel in $store.options.deflateLevel"
+												:key="deflateLevel">
+												<option :selected="$store.form.deflateLevel === deflateLevel"
+													:value="deflateLevel" x-text="deflateLevel"></option>
+											</template>
+										</select>
+										<span class="icon-cheveron-down" aria-hidden="true"></span>
+									</div>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" class="form-item">
+									<label class="label" for="deflateStrategy">Deflate Strategy</label>
+									<div class="select u-width-full-line">
+										<select x-model="$store.form.deflateStrategy" name="deflateStrategy">
+											<template x-for="deflateStrategy in $store.options.deflateStrategy"
+												:key="deflateStrategy">
+												<option :selected="$store.form.deflateStrategy === deflateStrategy"
+													:value="deflateStrategy" x-text="deflateStrategy"></option>
+											</template>
+										</select>
+										<span class="icon-cheveron-down" aria-hidden="true"></span>
 									</div>
 								</li>
 							</ul>
@@ -205,11 +222,11 @@
 			Alpine.store("form", {
 				advanced: false,
 				data: "Hello, world!",
-				type: "image/png",
-				quality: "",
-				version: "",
+				deflateLevel: 9,
+				deflateStrategy: 3,
+				version: "auto",
 				errorCorrectionLevel: "",
-				maskPattern: "",
+				maskPattern: "auto",
 				margin: "",
 				scale: "",
 				width: "",
@@ -220,18 +237,18 @@
 					let url = "https://{{HOSTNAME}}/qr";
 					url += '?data=' + encodeURIComponent(this.data);
 					if (this.advanced) {
-						if (this.type != "image/png") {
-							url += "&type=" + encodeURIComponent(this.type);
-							if (this.quality) {
-								url += "&quality=" + encodeURIComponent(this.quality);
-							}
-						}
-						if (this.version) {
+						if (this.version !== "auto") {
 							url += "&version=" + encodeURIComponent(this.version);
+						}
+						if (this.deflateLevel != 9) {
+							url += "&deflateLevel=" + encodeURIComponent(this.deflateLevel);
+						}
+						if (this.deflateStrategy != 3) {
+							url += "&deflateStrategy=" + encodeURIComponent(this.deflateStrategy);
 						}
 						if (this.errorCorrectionLevel)
 							url += "&errorCorrectionLevel=" + encodeURIComponent(this.errorCorrectionLevel);
-						if (this.maskPattern) {
+						if (this.maskPattern !== "auto") {
 							url += "&maskPattern=" + encodeURIComponent(this.maskPattern);
 						}
 						if (this.margin) {
@@ -262,10 +279,11 @@
 			});
 
 			Alpine.store("options", {
-				types: [
-					"image/png",
-					"image/jpeg",
-					"image/webp",
+				deflateLevel: [
+					0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+				],
+				deflateStrategy: [
+					0, 1, 2, 3, 4,
 				],
 				errorCorrectionLevel: [
 					"L",
@@ -273,6 +291,17 @@
 					"Q",
 					"H",
 				],
+				version: [
+					"auto", 1, 2, 3, 4, 5, 6, 7, 8, 9,
+					10, 11, 12, 13, 14, 15, 16, 17, 18,
+					19, 20, 21, 22, 23, 24, 25, 26, 27,
+					28, 29, 30, 31, 32, 33, 34, 35, 36,
+					37, 38, 39, 40,
+				],
+				maskPattern: [
+					"auto", 0, 1, 2, 3, 4, 5, 6, 7,
+				],
+
 			})
 		});
 	</script>
