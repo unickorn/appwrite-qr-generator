@@ -9,6 +9,10 @@ export default async ({ req, res, log, error }: any) => {
     });
     return res.send(html, 200, { "Content-Type": "text/html; charset=utf-8" });
   }
+  if (req.path === "/favicon.ico") {
+    // return empty pixels
+    return res.send("", 200, { "Content-Type": "image/x-icon" });
+  }
   if (req.path === "/qr") {
     // parse options
     const dataValue = req.query.data;
