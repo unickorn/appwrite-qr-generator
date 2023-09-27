@@ -10,8 +10,8 @@ export default async ({ req, res, log, error }: any) => {
     return res.send(html, 200, { "Content-Type": "text/html; charset=utf-8" });
   }
   if (req.path === "/favicon.ico") {
-    // return empty pixels
-    return res.send("", 200, { "Content-Type": "image/x-icon" });
+    // redirect to https://qr.ilhan.me/qr?data=https%3A%2F%2Fqr.ilhan.me
+    return res.redirect(302, "/qr?data=https%3A%2F%2Fqr.ilhan.me");
   }
   if (req.path === "/qr") {
     // parse options
