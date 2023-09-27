@@ -10,8 +10,10 @@ export default async ({ req, res, log, error }: any) => {
     return res.send(html, 200, { "Content-Type": "text/html; charset=utf-8" });
   }
   if (req.path === "/favicon.ico") {
-    // redirect to https://qr.ilhan.me/qr?data=https%3A%2F%2Fqr.ilhan.me
-    return res.redirect(302, "/qr?data=https%3A%2F%2Fqr.ilhan.me");
+    const pngBytes = await QRCode.toBuffer("https://qr.ilhan.me");
+    return res.send(pngBytes, 200, {
+      "Content-Type": "image/png",
+    });
   }
   if (req.path === "/qr") {
     // parse options
