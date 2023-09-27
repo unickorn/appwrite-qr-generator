@@ -1,14 +1,15 @@
 {
-  "name": "starter-template",
+  "name": "appwrite-qr-generator",
   "version": "1.0.0",
-  "description": "",
+  "description": "An appwrite function for generating QR codes.",
   "main": "src/main.ts",
   "type": "module",
   "scripts": {
     "format": "prettier --write ."
   },
   "dependencies": {
-    "node-appwrite": "^9.0.0"
+    "@types/qrcode": "^1.5.2",
+    "qrcode": "^1.5.3"
   },
   "devDependencies": {
     "prettier": "^3.0.0"

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link rel="stylesheet" href="https://unpkg.com/@appwrite.io/pink" />
+	<link rel="stylesheet" href="https://unpkg.com/@appwrite.io/pink-icons" />
+	<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+	<title>QR Code Generator</title>
+	<meta name="description" content="Generate QR codes." />
+	<meta property="og:url" content="https://{{HOSTNAME}}/" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="QR Code Generator" />
+	<meta property="og:description" content="Generate QR codes." />
+	<meta property="og:image" content="https://{{HOSTNAME}}/qr?data={{HOSTNAME}}" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta property="twitter:domain" content="{{HOSTNAME}}" />
+	<meta property="twitter:url" content="https://{{HOSTNAME}}/" />
+	<meta name="twitter:title" content="QR Code Generator" />
+	<meta name="twitter:description" content="Generate QR codes." />
+	<meta name="twitter:image" content="https://{{HOSTNAME}}/qr?data={{HOSTNAME}}" />
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+		@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+		[x-cloak] {
+			display: none !important;
+		}
+	</style>
+</head>
+
+<body class="theme-dark">
+	<main class="theme-dark main-content">
+		<div class="top-cover u-padding-block-end-56">
+			<div class="container">
+				<div class="u-flex u-gap-16 u-flex-justify-center u-margin-block-start-16">
+					<h1 class="heading-level-1 heading-font">QR Code Generator</h1>
+					<code class="u-un-break-text"></code>
+				</div>
+				<p class="body-text-1 u-normal u-margin-block-start-8" style="max-width: 50rem">
+					Use this builder to preview generated QR codes and play with parameters.
+				</p>
+			</div>
+		</div>
+		<div x-data="{}" class="container u-margin-block-start-negative-56">
+			<div class="theme-dark card">
+				<section class="grid-1-1 u-column-gap-16 u-row-gap-32" id="design">
+					<div class="grid-1-1-col-1 u-max-width-450">
+						<form class="form">
+							<ul class="form-list">
+								<li class="form-item">
+									<label class="label" for="data">Data to encode</label>
+									<div class="input-text-wrapper">
+										<input x-model="$store.form.data" type="text"
+											class="input-text u-padding-inline-end-56" placeholder="Hello, world!"
+											name="data" />
+									</div>
+								</li>
+								<li class="form-item">
+									<div class="input-checkbox-wrapper">
+										<input x-model="$store.form.advanced" type="checkbox" class="input-checkbox"
+											id="advanced" />
+										<label class="label-checkbox" for="advanced">
+											<span class="text">I want full control, show me all options</span>
+										</label>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" class="form-item">
+									<label class="label" for="type">Image type</label>
+									<div class="select u-width-full-line">
+										<select x-model="$store.form.type" name="type">
+											<template x-for="type in $store.options.types" :key="type">
+												<option :selected="$store.form.type === type" :value="type"
+													x-text="type"></option>
+											</template>
+										</select>
+										<span class="icon-cheveron-down" aria-hidden="true"></span>
+									</div>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" x-show="$store.form.type != 'image/png'"
+									class="form-item">
+									<label class="label" for="quality">Image Quality (0.0 - 1.0)</label>
+									<div class="input-text-wrapper">
+										<input x-model="$store.form.quality" type="number"
+											class="input-text u-padding-inline-end-56" placeholder="0.92"
+											name="quality" />
+									</div>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" class="form-item">
+									<label class="label" for="version">QR Version (optional, 1 - 40)</label>
+									<div class="input-text-wrapper">
+										<input x-model="$store.form.version" type="number"
+											class="input-text u-padding-inline-end-56" placeholder="" name="version" />
+									</div>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" class="form-item">
+									<label class="label" for="errorCorrectionLevel">Error Correction Level</label>
+									<div class="select u-width-full-line">
+										<select x-model="$store.form.errorCorrectionLevel" name="errorCorrectionLevel">
+											<template
+												x-for="errorCorrectionLevel in $store.options.errorCorrectionLevel"
+												:key="errorCorrectionLevel">
+												<option
+													:selected="$store.form.errorCorrectionLevel === errorCorrectionLevel"
+													:value="errorCorrectionLevel" x-text="errorCorrectionLevel">
+												</option>
+											</template>
+										</select>
+										<span class="icon-cheveron-down" aria-hidden="true"></span>
+									</div>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" class="form-item">
+									<label class="label" for="maskPattern">Mask Pattern (optional, 0 - 7)</label>
+									<div class="input-text-wrapper">
+										<input x-model="$store.form.maskPattern" type="number"
+											class="input-text u-padding-inline-end-56" placeholder=""
+											name="maskPattern" />
+									</div>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" class="form-item">
+									<label class="label" for="margin">Margin (optional)</label>
+									<div class="input-text-wrapper">
+										<input x-model="$store.form.margin" type="number"
+											class="input-text u-padding-inline-end-56" placeholder="" name="margin" />
+									</div>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" class="form-item">
+									<label class="label" for="scale">Scale (optional)</label>
+									<div class="input-text-wrapper">
+										<input x-model="$store.form.scale" type="number"
+											class="input-text u-padding-inline-end-56" placeholder="" name="scale" />
+									</div>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" class="form-item">
+									<label class="label" for="width">Width (optional)</label>
+									<div class="input-text-wrapper">
+										<input x-model="$store.form.width" type="number"
+											class="input-text u-padding-inline-end-56" placeholder="" name="width" />
+									</div>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" class="form-item">
+									<label class="label" for="colorLight">Light color (optional)</label>
+									<div class="input-text-wrapper">
+										<input x-model="$store.form.colorLight" type="text"
+											class="input-text u-padding-inline-end-56" placeholder="#ffffff"
+											name="colorLight" />
+									</div>
+								</li>
+								<li x-cloak x-show="$store.form.advanced" class="form-item">
+									<label class="label" for="colorDark">Dark color (optional)</label>
+									<div class="input-text-wrapper">
+										<input x-model="$store.form.colorDark" type="text"
+											class="input-text u-padding-inline-end-56" placeholder="#000000"
+											name="colorDark" />
+									</div>
+								</li>
+							</ul>
+
+						</form>
+					</div>
+					<div class="grid-1-1-col-2">
+						<img style="border-radius: var(--border-radius-medium)" :src="$store.form.generateUrl()" />
+						<form class="form u-margin-block-start-16">
+							<ul class="form-list">
+								<li class="form-item">
+									<label class="label" for="url">Generated URL</label>
+									<div class="interactive-text-output">
+										<span class="text u-break-word" x-text="$store.form.generateUrl()"></span>
+										<div class="interactive-text-output-buttons">
+											<button type="button"
+												x-on:click="navigator.clipboard.writeText($store.form.generateUrl())"
+												class="interactive-text-output-button is-hidden" aria-label="Copy URL">
+												<span class="icon-duplicate" aria-hidden="true"></span>
+											</button>
+										</div>
+									</div>
+								</li>
+
+								<li class="form-item">
+									<label class="label" for="url">Generated HTML</label>
+									<div class="interactive-text-output">
+										<span class="text u-break-word" x-text="$store.form.generateHtml()"></span>
+										<div class="interactive-text-output-buttons">
+											<button type="button" class="interactive-text-output-button is-hidden"
+												x-on:click="navigator.clipboard.writeText($store.form.generateHtml())"
+												aria-label="Copy HTML">
+												<span class="icon-duplicate" aria-hidden="true"></span>
+											</button>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</form>
+					</div>
+				</section>
+			</div>
+		</div>
+	</main>
+
+	<script>
+		document.addEventListener("alpine:init", async () => {
+			Alpine.store("form", {
+				advanced: false,
+				data: "Hello, world!",
+				type: "image/png",
+				quality: "",
+				version: "",
+				errorCorrectionLevel: "",
+				maskPattern: "",
+				margin: "",
+				scale: "",
+				width: "",
+				colorLight: "",
+				colorDark: "",
+
+				generateUrl() {
+					let url = "https://{{HOSTNAME}}/qr";
+					url += '?data="' + encodeURIComponent(this.data) + '"';
+					if (this.advanced) {
+						if (this.type != "image/png") {
+							url += "&type=" + encodeURIComponent(this.type);
+							if (this.quality) {
+								url += "&quality=" + encodeURIComponent(this.quality);
+							}
+						}
+						if (this.version) {
+							url += "&version=" + encodeURIComponent(this.version);
+						}
+						if (this.errorCorrectionLevel)
+							url += "&errorCorrectionLevel=" + encodeURIComponent(this.errorCorrectionLevel);
+						if (this.maskPattern) {
+							url += "&maskPattern=" + encodeURIComponent(this.maskPattern);
+						}
+						if (this.margin) {
+							url += "&margin=" + encodeURIComponent(this.margin);
+						}
+						if (this.scale) {
+							url += "&scale=" + encodeURIComponent(this.scale);
+						}
+						if (this.width) {
+							url += "&width=" + encodeURIComponent(this.width);
+						}
+						if (this.colorLight) {
+							url += "&colorLight=" + encodeURIComponent(this.colorLight);
+						}
+						if (this.colorDark) {
+							url += "&colorDark=" + encodeURIComponent(this.colorDark);
+						}
+					}
+
+					return url;
+				},
+
+				generateHtml() {
+					const url = this.generateUrl();
+					const html = '<img src="' + url + '" alt="QR Code">';
+					return html;
+				},
+			});
+
+			Alpine.store("options", {
+				types: [
+					"image/png",
+					"image/jpeg",
+					"image/webp",
+				],
+				errorCorrectionLevel: [
+					"L",
+					"M",
+					"Q",
+					"H",
+				],
+			})
+		});
+	</script>
+</body>
+
+</html>
