@@ -154,7 +154,7 @@
 										<select x-model="$store.form.deflateLevel" name="deflateLevel">
 											<template x-for="deflateLevel in $store.options.deflateLevel"
 												:key="deflateLevel">
-												<option :selected="$store.form.deflateLevel === deflateLevel"
+												<option :selected="$store.form.deflateLevel == deflateLevel"
 													:value="deflateLevel" x-text="deflateLevel"></option>
 											</template>
 										</select>
@@ -167,7 +167,7 @@
 										<select x-model="$store.form.deflateStrategy" name="deflateStrategy">
 											<template x-for="deflateStrategy in $store.options.deflateStrategy"
 												:key="deflateStrategy">
-												<option :selected="$store.form.deflateStrategy === deflateStrategy"
+												<option :selected="$store.form.deflateStrategy == deflateStrategy"
 													:value="deflateStrategy" x-text="deflateStrategy"></option>
 											</template>
 										</select>
@@ -237,7 +237,7 @@
 					let url = "https://{{HOSTNAME}}/qr";
 					url += '?data=' + encodeURIComponent(this.data);
 					if (this.advanced) {
-						if (this.version !== "auto") {
+						if (this.version != "auto") {
 							url += "&version=" + encodeURIComponent(this.version);
 						}
 						if (this.deflateLevel != 9) {
